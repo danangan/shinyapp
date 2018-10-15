@@ -1,0 +1,24 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1539576524858.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1787410702",
+    "id" : "55465CFC",
+    "lastKnownWriteTime" : 1539579375,
+    "last_content_update" : 1539579386703,
+    "path" : "~/Algoritma/Interactive Plotting LBB/analysis.Rmd",
+    "project_path" : "analysis.Rmd",
+    "properties" : {
+        "cursorPosition" : "43,0",
+        "last_setup_crc32" : "F0FD14B31e8b9808",
+        "scrollLine" : "40",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 7,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

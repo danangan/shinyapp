@@ -1,0 +1,90 @@
+---
+title: "analysis"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(ggplot2)
+library(ggthemes)
+library(dplyr)
+library(lubridate)
+
+?lubridate
+```
+
+```{r}
+bakery <- read.csv('data.csv')
+
+str(bakery)
+
+bakery_by_day <- bakery %>% 
+    filter(Item == 'Bread' | Item == 'Coffee') %>%
+   group_by_(.dots=c("Date","Item")) %>% 
+   summarize(total=length(Item))
+
+anyNA(bakery)
+
+```
+```{r}
+#table(bakery$Item)
+
+bakery$Date <- ymd(bakery$Date)
+
+bakery$Time <- hms(bakery$Time)
+
+bakery$Hour <- hour(bakery$Time)
+
+test <- head(bakery)
+
+bakery$Hour <- hour(bakery$Time)
+
+x <- function(x) {
+  if (x > 8 && x < 12) {
+    x <- '8am to 12pm'
+  } else if (x >12 && x < 16) {
+    x <-'12pm to 4pm'
+  } else if (x > 16 && x < 20) {
+    x <- '4pm to 8pm'
+  } else {
+    x <- '8pm to 8am'
+  }
+}
+
+bakery$TimePeriod <- mapply(bakery$Hour, FUN = x)
+
+head(bakery)
+```
+
+```{r}
+    popular.item <- bakery %>%
+       group_by(Item) %>%
+      summarize(total=length(Item)) %>%
+      arrange(-total)
+
+nrow(popular.item)
+```
+
+
+
+## R Markdown
+
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

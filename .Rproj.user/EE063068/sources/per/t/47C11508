@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1539575349377.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "942066353",
+    "id" : "47C11508",
+    "lastKnownWriteTime" : 1539579352,
+    "last_content_update" : 1539579352401,
+    "path" : "~/Algoritma/Interactive Plotting LBB/shiny/app.R",
+    "project_path" : "shiny/app.R",
+    "properties" : {
+        "cursorPosition" : "17,0",
+        "scrollLine" : "9"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

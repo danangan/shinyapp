@@ -1,0 +1,225 @@
+"0","table
+"
+"1","function (..., exclude = if (useNA == ""no"") c(NA, NaN), useNA = c(""no"", 
+"
+"1","    ""ifany"", ""always""), dnn = list.names(...), deparse.level = 1) 
+"
+"1","{
+"
+"1","    list.names <- function(...) {
+"
+"1","        l <- as.list(substitute(list(...)))[-1L]
+"
+"1","        nm <- names(l)
+"
+"1","        fixup <- if (is.null(nm)) 
+"
+"1","            seq_along(l)
+"
+"1","        else nm == """"
+"
+"1","        dep <- vapply(l[fixup], function(x) switch(deparse.level + 
+"
+"1","            1, """", if (is.symbol(x)) as.character(x) else """", 
+"
+"1","            deparse(x, nlines = 1)[1L]), """")
+"
+"1","        if (is.null(nm)) 
+"
+"1","            dep
+"
+"1","        else {
+"
+"1","            nm[fixup] <- dep
+"
+"1","            nm
+"
+"1","        }
+"
+"1","    }
+"
+"1","    miss.use <- missing(useNA)
+"
+"1","    miss.exc <- missing(exclude)
+"
+"1","    useNA <- if (miss.use && !miss.exc && !match(NA, exclude, 
+"
+"1","        nomatch = 0L)) 
+"
+"1","        ""ifany""
+"
+"1","    else match.arg(useNA)
+"
+"1","    doNA <- useNA != ""no""
+"
+"1","    if (!miss.use && !miss.exc && doNA && match(NA, exclude, 
+"
+"1","        nomatch = 0L)) 
+"
+"1","        warning(""'exclude' containing NA and 'useNA' != \""no\""' are a bit contradicting"")
+"
+"1","    args <- list(...)
+"
+"1","    if (!length(args)) 
+"
+"1","        stop(""nothing to tabulate"")
+"
+"1","    if (length(args) == 1L && is.list(args[[1L]])) {
+"
+"1","        args <- args[[1L]]
+"
+"1","        if (length(dnn) != length(args)) 
+"
+"1","            dnn <- if (!is.null(argn <- names(args))) 
+"
+"1","                argn
+"
+"1","            else paste(dnn[1L], seq_along(args), sep = ""."")
+"
+"1","    }
+"
+"1","    bin <- 0L
+"
+"1","    lens <- NULL
+"
+"1","    dims <- integer()
+"
+"1","    pd <- 1L
+"
+"1","    dn <- NULL
+"
+"1","    for (a in args) {
+"
+"1","        if (is.null(lens)) 
+"
+"1","            lens <- length(a)
+"
+"1","        else if (length(a) != lens) 
+"
+"1","            stop(""all arguments must have the same length"")
+"
+"1","        fact.a <- is.factor(a)
+"
+"1","        if (doNA) 
+"
+"1","            aNA <- anyNA(a)
+"
+"1","        if (!fact.a) {
+"
+"1","            a0 <- a
+"
+"1","            a <- factor(a, exclude = exclude)
+"
+"1","        }
+"
+"1","        add.na <- doNA
+"
+"1","        if (add.na) {
+"
+"1","            ifany <- (useNA == ""ifany"")
+"
+"1","            anNAc <- anyNA(a)
+"
+"1","            add.na <- if (!ifany || anNAc) {
+"
+"1","                ll <- levels(a)
+"
+"1","                if (add.ll <- !anyNA(ll)) {
+"
+"1","                  ll <- c(ll, NA)
+"
+"1","                  TRUE
+"
+"1","                }
+"
+"1","                else if (!ifany && !anNAc) 
+"
+"1","                  FALSE
+"
+"1","                else TRUE
+"
+"1","            }
+"
+"1","            else FALSE
+"
+"1","        }
+"
+"1","        if (add.na) 
+"
+"1","            a <- factor(a, levels = ll, exclude = NULL)
+"
+"1","        else ll <- levels(a)
+"
+"1","        a <- as.integer(a)
+"
+"1","        if (fact.a && !miss.exc) {
+"
+"1","            ll <- ll[keep <- which(match(ll, exclude, nomatch = 0L) == 
+"
+"1","                0L)]
+"
+"1","            a <- match(a, keep)
+"
+"1","        }
+"
+"1","        else if (!fact.a && add.na) {
+"
+"1","            if (ifany && !aNA && add.ll) {
+"
+"1","                ll <- ll[!is.na(ll)]
+"
+"1","                is.na(a) <- match(a0, c(exclude, NA), nomatch = 0L) > 
+"
+"1","                  0L
+"
+"1","            }
+"
+"1","            else {
+"
+"1","                is.na(a) <- match(a0, exclude, nomatch = 0L) > 
+"
+"1","                  0L
+"
+"1","            }
+"
+"1","        }
+"
+"1","        nl <- length(ll)
+"
+"1","        dims <- c(dims, nl)
+"
+"1","        if (prod(dims) > .Machine$integer.max) 
+"
+"1","            stop(""attempt to make a table with >= 2^31 elements"")
+"
+"1","        dn <- c(dn, list(ll))
+"
+"1","        bin <- bin + pd * (a - 1L)
+"
+"1","        pd <- pd * nl
+"
+"1","    }
+"
+"1","    names(dn) <- dnn
+"
+"1","    bin <- bin[!is.na(bin)]
+"
+"1","    if (length(bin)) 
+"
+"1","        bin <- bin + 1L
+"
+"1","    y <- array(tabulate(bin, pd), dims, dimnames = dn)
+"
+"1","    class(y) <- ""table""
+"
+"1","    y
+"
+"1","}
+"
+"1","<bytecode: 0x10328d278>
+"
+"1","<environment: namespace:base>
+"
+"0","head(bakery)"
+"2","Error in head(bakery) : object 'bakery' not found
+"

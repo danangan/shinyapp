@@ -1,0 +1,66 @@
+#
+# This is a Shiny web application. You can run the application by clicking
+# the 'Run App' button above.
+#
+# Find out more about building applications with Shiny here:
+#
+#    http://shiny.rstudio.com/
+#
+
+library(shiny)
+library(dplyr)
+library(lubridate)
+library(ggplot2)
+library(plotly)
+
+bakery <- read.csv('data.csv')
+
+bakery$Date <- ymd(bakery$Date)
+
+max(bakery$Date)
+
+# Define UI for application that draws a histogram
+ui <- fluidPage(
+   
+   # Application title
+   titlePanel("Coffee Shop Transaction Data"),
+   
+   # Sidebar with a slider input for number of bins 
+   sidebarLayout(
+      sidebarPanel(
+          verticalLayout(
+            selectInput('showItem', 'Item', as.vector(bakery$Item), selected = 'Bread', multiple = T),
+            dateRangeInput('dateRange', 'Date', start  = '2016-10-30', end='2016-05-30')
+          )
+      ),
+      
+      # Show a plot of the generated distribution
+      mainPanel(
+        plotlyOutput("distPlot")
+      )
+   )
+)
+
+# Define server logic required to draw a histogram
+server <- function(input, output) {
+  
+   output$distPlot <- renderPlotly({
+      # draw the histogram with the specified number of bins
+     
+     bakery_by_day <- bakery %>% 
+       filter(Item == input$showItem) %>%
+       filter(between(Date, as.Date(input$dateRange[0]),as.Date(input$dateRange[1]))) %>%
+       group_by_(.dots=c("Date","Item")) %>% 
+       summarize(total=length(Item))
+     
+     plot <- ggplot(bakery_by_day, aes(x=Date, y=total)) +
+       geom_col() +
+       facet_wrap(~ Item)
+     
+     ggplotly(plot)
+   })
+}
+
+# Run the application 
+shinyApp(ui = ui, server = server)
+
